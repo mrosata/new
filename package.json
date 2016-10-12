@@ -1,0 +1,12 @@
+{
+  "name": "blueprints",
+  "version": "0.1.0",
+  "description": "A script intended to make boilerplate code not only easier to manage, but also simpier to setup, configure and share",
+  "main": "blueprints.sh",
+  "repository": {
+    "url": "https://github.com/mrosata/new.git",
+    "type": "git"
+  },
+  "author": "Michael Rosata",
+  "license": "MIT"
+}
