@@ -35,9 +35,32 @@ function if_file () {
 }
 
 
+# Display a list of all entries in a directory
+#   $1  ->  location of directory
+#   $2  ->  (optional) prefix string 
+#
+#   eg: list_subdirectories_in '/home/mike/docs' '-- '
+#
+#     -- financial_ruin.xcl
+#     -- greater_american_novel.doc
+#   
+function list_subdirectories_in () {
+  _prefix_="$2"
+  if [ -d "$1" ];then
+    for subdir in $(ls $1);do
+      echo "$_prefix_$subdir"
+    done
+  fi
+}
+
+
 # Add to verbose message
 function add_verbose_msg () {
-  VERBOSE_MSG="$VERBOSE_MSG\n$1"
+  if [ -n "$VERBOSE_MSG" ];then
+    VERBOSE_MSG="$VERBOSE_MSG\n  $1"
+  else
+    VERBOSE_MSG="  $1"
+  fi
 }
 
 
