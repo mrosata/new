@@ -25,17 +25,34 @@ fi
 
 #### source the configuration file
 . "$blueprint_config"
+# unset every config option from file after it is set to local var
 config_out_folder=$newpath
+unset newpath
 config_filename=$template
-template_file="$blueprint_folder/$config_filename"
-if [ -n "$config_out_folder" ];then
-  new_generated_dest="$TARGET_DIR/$config_out_folder/$destname"
-else
-  new_generated_dest="$TARGET_DIR/$destname" 
+unset template
+config_after=$after
+unset after
+config_ext=$extension
+unset extension
+
+final_name=$destname
+# Check if we there is explicit extension for the blueprint
+if [ -n "$config_ext" ];then
+  regexp_test=".*$config_ext\$"
+  # Make sure the extension isn't already on the name
+  if [[ ! "$destname" =~ $regexp_test ]];then
+    final_name="$destname$config_ext"
+  fi
+  unset regexp_test
 fi
 
-add_verbose_msg "- source: $template_file"
-add_verbose_msg "- dest: $new_generated_dest"
+
+template_file="$blueprint_folder/$config_filename"
+if [ -n "$config_out_folder" ];then
+  new_generated_dest="$TARGET_DIR/$config_out_folder/$final_name"
+else
+  new_generated_dest="$TARGET_DIR/$final_name" 
+fi
 
 
 ################################################################################
@@ -103,6 +120,17 @@ if [ "0" -eq "$NO_CHANGE" ];then
   cp "$template_file" "$new_generated_dest"
 fi
 
+# Check if there is a blueprint to run after
+#### TODO: Make the above functionality reusable so we can make more blueprint
+####       if a blueprint utilizes the after= variable. 
+if [ -n "$config_after" ];then
+  echo -n
+  # echo "todo: run \`new $blueprint $destname\`"
+fi
+
 unset new_generated_dest
 unset dest_dir_backup
 unset absdir_new_generated_dest
+unset config_filename
+unset config_after
+unset config_out_folder
