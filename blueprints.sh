@@ -34,9 +34,16 @@ pushd `dirname $0` > /dev/null
 SCRIPTPATH=`pwd`
 popd > /dev/null
 
+# Source the config for the main program
+if [ ! -f "$SCRIPTPATH/.new-conf" ];then
+  echo "No config file, run ./install.sh"
+  exit;
+fi
+. "$SCRIPTPATH/.new-conf"
+
 NEW_IMPORTS_DIR="$SCRIPTPATH/bin"
-NEW_TEMPLATES_DIR="${NEW_TEMPLATES_DIR:-$SCRIPTPATH/templates}"
-NEW_BACKUP_DIR="${NEW_BACKUP_DIR:-$SCRIPTPATH/.backups}"
+NEW_TEMPLATES_DIR="${blueprints:-$SCRIPTPATH/templates}"
+NEW_BACKUP_DIR="${backups:-$SCRIPTPATH/.backups}"
 
 function run_create_new_script() 
   { . "$NEW_IMPORTS_DIR/create-new.sh"; }
@@ -46,6 +53,7 @@ function run_destroy_script()
 
 function run_generate_new_script ()
   { . "$NEW_IMPORTS_DIR/generate-new.sh"; }
+
 
 ################################################################################
 ####

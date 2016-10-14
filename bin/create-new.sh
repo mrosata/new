@@ -11,8 +11,11 @@
 ####              create a new blueprint config file, folder, and template file.
 ####
 
+
 EDITOR=${EDITOR:-vi}
 PAGER=${PAGER:-less}
+
+echo $blueprint
 new_new_blueprint_folder="$NEW_TEMPLATES_DIR/$blueprint"
 new_create_template="$new_new_blueprint_folder/template"
 template_from_file="$destname"
@@ -58,6 +61,7 @@ add_verbose_msg "creating new configuration file"
 
 add_verbose_msg "creating new template file $new_create_template"
 touch "$new_create_template"
+
 # Now see if user passed in a template file to use.
 if [ -n "$template_from_file" ] && [ -f "$template_from_file" ];then
   add_verbose_msg "using file $template_from_file as template"
