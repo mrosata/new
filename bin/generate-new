@@ -3,7 +3,7 @@
 ################################################################################
 ####
 ####   bin/create-new.sh
-####     @package: "Blueprints"
+####     @package: "New"
 ####     @author: mrosata
 ####     @date:   10-2016
 ####     @desc:   This file is sourced from the blueprints package. It should

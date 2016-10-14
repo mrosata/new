@@ -1,0 +1,80 @@
+#!/bin/bash
+
+################################################################################
+####
+####   bin/.program-instruction
+####     @package: "Blueprints"
+####     @author: mrosata
+####     @date:   10-2016
+####     @desc:   This file is sourced from the blueprints package. It should
+####              not be used as a stand alone executable. It is used to 
+####              display the "help" text onto the terminal. 
+####
+
+
+echo "
+  --PROGRAM INFO--
+
+  \"New\" aka \"Blueprints\"
+
+
+  --DESCRIPTION--
+
+  This script is intended to make your boilerplate code not only easier to
+  manage, but also simplier to setup, configure and share. You can quickly
+  add a new empty template to the system or generate a template from a file
+  that is already on your computer. Eventually you will be able to include
+  config files within projects that define boilerplate components/templates 
+  for that project.
+
+
+  --USAGE--
+
+  new [COMMAND] [-nhvfBe] [-tb DIRECTORY] BLUEPRINT DEST
+
+  \"Required Information\"
+
+    BLUEPRINT
+      - Name of blueprint template to use. The \"BLUEPRINT\" name will be
+        used to determine how to create, store, reproduce, edit and remove
+        a specific blueprint.
+
+    DEST
+      - Name to be used in the templates recreated by the script inside you
+        project or working folder. In the case that multiple files are created
+        by a blueprint, the configuration file should handle ensuring that
+        no collisions occur
+
+
+  \"Variables\"
+
+    -t TARGET_DIR
+        This variable is the target root directory. If you are in directory
+        \"/projects\" then by default TARGET_DIR=\"/projects\", but that may not
+        be where generated boilerplate files go. For instance, a configuration
+        file might set a base_dir=\"app\" in which case that boilerplate file
+        would be created in \"/projects/app\".
+
+    -b BACKUP_DIR
+        In most cases generated boilerplate shouldn't overwrite other files, but 
+        in the case where a file is overwritten a backup is created (unless user
+        explicity sets -B). Generally you should not care to touch this variable.
+        If you change this variable for a run, you also need to set it if and 
+        when you want to restore the old file.
+
+
+  \"Flags\"
+    
+    -h   \"Help\", show this screen.
+    -n   \"No change\", meaning no files will be created/altered/removed this run.
+    -v   \"Verbose\", the verbosity level can be set by using multiple \"v\" flags
+    -f   \"\",
+    -B   \"No Backup\", if a file is overwritten do not create a backup. Generally
+         templates shouldn't overwrite files.
+    -e   \"Edit\", open editor upon any change. Uses the global EDITOR|-vi
+
+
+  THIS PROGRAM WAS CREATED BY [Michael Rosata] AND IS SUBJECT TO MIT LICENSING. ANY 
+  QUESTIONS MAY BE SENT TO [mrosata1984@gmail.com] OR VISIT THE \"NEW\" GITHUB PAGE
+  LOCATED AT [https://github.com/mrosata/new.git].
+"

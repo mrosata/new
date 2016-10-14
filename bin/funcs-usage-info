@@ -1,0 +1,64 @@
+#!/bin/bash
+
+################################################################################
+####
+####  Functions for explaining usage of "new"...
+####    @package: "New"
+####    @author:  mrosata
+####    @date:    10-11-2016
+####
+
+
+# Short and sweet info and direction to -h
+function print_small_description() {
+  echo -e "  \"new\" AKA \"blueprints.sh\"
+    Flexible blueprinting. Pass -h for help"
+}
+
+# Large help (like a man page)
+function print_program_help() {
+  program_instruction | $PAGER
+}
+
+# Shows all the templates in the new templates directory 
+function display_templates_list () {
+  if [ -d "$NEW_TEMPLATES_DIR" ];then
+    echo -e "Found $(ls -1 $NEW_TEMPLATES_DIR | wc -l) templates:"
+    list_subdirectories_in $NEW_TEMPLATES_DIR '    '
+  fi
+}
+
+# Info about where certain folders used by the program are
+# currently pointed. Since the folders are configurable, 
+# this information may be useful for more than just debugging
+# the "new" base program scripts.
+function show_folder_locations() {
+  echo -e " \e[4m\"New\" folder locations:\e[24m
+
+   - \e[1mNew bin directory (where program is):\e[21m
+       $SCRIPTPATH
+   - \e[1mTemplate directory:\e[21m
+       $NEW_TEMPLATES_DIR
+   - \e[1mBase Write directory (your dir):\e[21m
+       $TARGET_DIR
+  "
+}
+
+
+# Check if user passed -h|help -l|list or info
+#   @param $1 pass in the param to check (probably $1)
+function check_arguments_help_info_list () {
+  if [ "$1" = "-h" ] || [ "$1" = "help" ];then
+    print_program_help
+    exit_with_code $EXIT_OK
+  
+  elif [ "$1" = "-l" ] || [ "$1" = "list" ];then
+    display_templates_list
+    exit_with_code $EXIT_OK
+  
+  elif [ "$1" = "info" ];then
+    print_small_description
+    exit_with_code $EXIT_OK
+  fi
+}
+

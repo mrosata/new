@@ -3,7 +3,7 @@
 ################################################################################
 ####
 ####   bin/install.sh
-####     @package: "Blueprints"
+####     @package: "New"
 ####     @author: mrosata
 ####     @date:   10-2016
 ####     @desc:   This file is used to install and setup the "new" program.

@@ -3,12 +3,12 @@
 ################################################################################
 ####
 ####   bin/destroy-new.sh
-####     @package: "Blueprints"
+####     @package: "New"
 ####     @author: mrosata
 ####     @date:   10-2016
 ####     @desc:   This file is sourced from the blueprints package. It should
 ####              not be used as a stand alone executable. It will completely
-####              remove a "new"/"blueprints" templates folder from system.
+####              remove a "new" blueprints templates folder from system.
 ####
 
 EDITOR=${EDITOR:-vi}

@@ -1,0 +1,82 @@
+#!/bin/bash
+
+################################################################################
+####
+####  Exit codes and exiting function to display info from "new"...
+####    @package: "New"
+####    @author:  mrosata
+####    @date:    10-11-2016
+####
+
+
+################################################################################
+####
+####  "Base Variables and Exit Codes"
+####
+####  -exit codes
+####     EXIT_OK     ->  0   -->  "Successful exit"
+####     EXIT_USER   ->  1   -->  "User prompted exit (maybe a y/n prompt)"
+####     E_DSTERR    ->  11  -->  "Destination files directory not exist"
+####     E_BKUPERR   ->  12  -->  "Base backup directory not exist"
+####     E_DIRERR    ->  12  -->  "Directory error"
+####     E_TMPERR    ->  21  -->  "Template not found"
+####     E_NAMERR    ->  22  -->  "Name not allowed"
+####     E_EMTYOPT   ->  41  -->  "Zero Arguments"
+####     E_OPTERR    ->  42  -->  "Invalid Argument"
+####
+
+# Base Variables
+VERBOSE_MSG=
+
+# Exit Codes
+EXIT_OK=0
+EXIT_USER=1
+# Directory errors
+E_DSTERR=11
+E_BKUPERR=12
+E_DIRERR=13
+# run specific errors
+E_TMPERR=21
+E_NAMERR=22
+# Option errors
+E_EMTYOPT=41
+E_OPTERR=42
+
+# Exit the program and also display an error message if
+# the argument $1 is an error code (greater than 0) 
+function exit_with_code() {
+
+  # If verbose was set then show messages
+  if [ "$VERBOSE" -gt "0" ];then
+    echo -e "$VERBOSE_MSG"
+  fi
+
+  # Echo out error message
+  if [ "$1" -gt "0" ];then
+    case $1 in
+      $E_EMTYOPT)
+        echo "  Warning: No options found."
+        ;;
+      $E_OPTERR)
+        echo "  Error: invalid option." >&2
+        ;;
+      $E_TMPERR)
+        echo "  Error: template error." >&2
+        ;;
+      $E_DIRERR)
+        echo "  Error: directory error." >&2
+        ;;
+      $E_DSTERR)
+        echo "  Error: destination error." >&2
+        ;;
+      $E_BKUPERR)
+        echo "  Error: backup directory error." >&2
+        ;;
+      $E_NAMERR)
+        echo "  Error: Name not allowed." >&2
+        ;;
+    esac
+  fi
+
+  exit $1
+}

@@ -72,12 +72,33 @@ Alright. So now we know how to make an empty boilerplate and how to destroy it. 
 
 
 
+### Will-Change
+>-  `$NEW_TEMPLATES_DIR` will be a "default" value which shall easily   
+be overwritten by any number of configuration files located in  
+the users `$HOME_DIR` or project folders.
+>-  Somehow variables will be available for use inside templates. This
+feature requires some thought since "new"/blueprints must work for
+all file types, so it must be careful about how it chooses to identify
+variables intented to be templated and boilerplate with similar syntax 
+that is just meant to be part of the template. (perhaps the variables
+will be explict mappings between search and replace values)
+>-  There will be a restore. The backup is already done.        
 
 
 
+
+
+
+#### WARNING
+-------
+**BELOW THIS LINE YOU CAN NOT TRUST ANYTHING! **
+
+The following was written when this project was first conceptualized. Much
+of what is written is still true (as far as what the program hopes to be). 
+However, the implementation took a different shape during development and 
+in the future I expect that this entire README will be inaccurate (both up and down).
 
 > October 04, 2016
-> This project and README are in the works. I wanted to get a synopsis up though.
 
 ##### Introduction
 Everybody creates files, developers create a lot of them and usually with commonalities such as an `index.html` file which follows a common HTML5 boilerplate, maybe a component for a framework or a `.gitignore` template. Bottom line, we boilerplate like whoa.

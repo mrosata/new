@@ -2,7 +2,7 @@
 
 ################################################################################
 ####
-####   "Blueprints"
+####   "New"
 ####     @author: mrosata
 ####     @date:   10-2016
 ####     @desc:   Blueprints creates new boilerplate files based on templates
@@ -46,52 +46,30 @@ NEW_TEMPLATES_DIR="${blueprints:-$SCRIPTPATH/blueprints}"
 NEW_BACKUP_DIR="${backups:-$SCRIPTPATH/.backups}"
 
 function run_create_new_script() 
-  { . "$NEW_IMPORTS_DIR/create-new.sh"; }
+  { . "$NEW_IMPORTS_DIR/create-new"; }
 
 function run_destroy_script()
-  { . "$NEW_IMPORTS_DIR/destroy-new.sh"; }
+  { . "$NEW_IMPORTS_DIR/destroy-new"; }
 
 function run_generate_new_script ()
-  { . "$NEW_IMPORTS_DIR/generate-new.sh"; }
+  { . "$NEW_IMPORTS_DIR/generate-new"; }
+
+function run_usage_info_help_script ()
+  { . "$NEW_IMPORTS_DIR/funcs-usage-info"; }
+
+function run_bash_utils_script ()
+  { . "$NEW_IMPORTS_DIR/bash-utilities"; }
+
+function load_exit_code_script ()
+  { . "$NEW_IMPORTS_DIR/exit-code-util"; }
 
 
 ################################################################################
 ####
 ####   "Usage"
 ####      
-####      Assuming we have an alias for blueprint.sh
-####      alias new='`$HOME`/bin/blueprint.sh'
-####     new templatename destpath
-####
 
-function print_small_description() {
-  echo "  \"new\" AKA \"blueprints.sh\"
-    Flexible blueprinting. Pass -h for help"
-}
-
-function print_program_help() {
-  program_instruction | $PAGER
-}
-
-# Shows all the templates in the new templates directory 
-function display_templates_list () {
-  if [ -d "$NEW_TEMPLATES_DIR" ];then
-    echo "Found $(ls -1 $NEW_TEMPLATES_DIR | wc -l) templates:"
-    list_subdirectories_in $NEW_TEMPLATES_DIR '    '
-  fi
-}
-
-function show_folder_locations() {
-  echo -e " \e[4m\"New\" folder locations:\e[24m
-
-   - \e[1mNew bin directory (where program is):\e[21m
-       $SCRIPTPATH
-   - \e[1mTemplate directory:\e[21m
-       $NEW_TEMPLATES_DIR
-   - \e[1mBase Write directory (your dir):\e[21m
-       $TARGET_DIR
-  "
-}
+run_usage_info_help_script
 
 
 ################################################################################
@@ -99,13 +77,7 @@ function show_folder_locations() {
 ####  "Source Scripts"
 ####
 
-new_utils_file="$NEW_IMPORTS_DIR/bash-utilities.sh"
-if [ ! -f "$new_utils_file" ];then
-  echo "Could not find $new_utils_file which are required for new to run."
-  exit 30;
-fi
-. $new_utils_file
-
+run_bash_utils_script
 
 ################################################################################
 ####
@@ -120,65 +92,10 @@ fi
 ####     E_TMPERR    ->  21  -->  "Template not found"
 ####     E_NAMERR    ->  22  -->  "Name not allowed"
 ####     E_EMTYOPT   ->  41  -->  "Zero Arguments"
-####	   E_OPTERR    ->  42  -->  "Invalid Argument"
+####     E_OPTERR    ->  42  -->  "Invalid Argument"
 ####
 
-# Base Variables
-VERBOSE_MSG=
-
-# Exit Codes
-EXIT_OK=0
-EXIT_USER=1
-# Directory errors
-E_DSTERR=11
-E_BKUPERR=12
-E_DIRERR=13
-# run specific errors
-E_TMPERR=21
-E_NAMERR=22
-# Option errors
-E_EMTYOPT=41
-E_OPTERR=42
-
-# Exit the program and also display an error message if
-# the argument $1 is an error code (greater than 0) 
-function exit_with_code() {
-
-  # If verbose was set then show messages
-  if [ "$VERBOSE" -gt "0" ];then
-    echo -e "$VERBOSE_MSG"
-  fi
-
-  # Echo out error message
-  if [ "$1" -gt "0" ];then
-    case $1 in
-      $E_EMTYOPT)
-        echo "  Warning: No options found."
-        ;;
-  	  $E_OPTERR)
-	      echo "  Error: invalid option." >&2
-	      ;;
-      $E_TMPERR)
-        echo "  Error: template error." >&2
-        ;;
-      $E_DIRERR)
-        echo "  Error: directory error." >&2
-        ;;
-      $E_DSTERR)
-        echo "  Error: destination error." >&2
-        ;;
-      $E_BKUPERR)
-        echo "  Error: backup directory error." >&2
-        ;;
-      $E_NAMERR)
-        echo "  Error: Name not allowed." >&2
-        ;;
-    esac
-  fi
-
-  exit $1
-}
-
+load_exit_code_script
 
 ################################################################################
 ####
@@ -205,22 +122,6 @@ VERBOSE=0
 
 
 # Check if user passed -h|help -l|list or info
-function check_arguments_help_info_list () {
-  if [ "$1" = "-h" ] || [ "$1" = "help" ];then
-    print_program_help
-    exit_with_code $EXIT_OK
-  
-  elif [ "$1" = "-l" ] || [ "$1" = "list" ];then
-    display_templates_list
-    exit_with_code $EXIT_OK
-  
-  elif [ "$1" = "info" ];then
-    print_small_description
-    exit_with_code $EXIT_OK
-  fi
-}
-
-
 check_arguments_help_info_list "$1"
 
 # If there are no arguments passed in, show description
@@ -351,20 +252,3 @@ run_generate_new_script
 exit_with_code $EXIT_OK
 
 
-################################################################################
-####
-####   "Will-Change"
-####    >-  $NEW_TEMPLATES_DIR will be a "default" value which shall easily   
-####        be overwritten by any number of configuration files located in  
-####        the users $HOME_DIR or project folders.
-####
-####    >-  Somehow variables will be available for use inside templates. This
-####        feature requires some thought since "new"/blueprints must work for
-####		    all file types, so it must be careful about how it chooses to identify
-####        variables intented to be templated and boilerplate with similar syntax 
-####        that is just meant to be part of the template. (perhaps the variables
-####        will be explict mappings between search and replace values)
-####        
-####    >-  There will be a restore. The backup is already done.        
-####        
-####
