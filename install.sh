@@ -16,8 +16,8 @@ popd > /dev/null
 # Create the configuration file if not exists
 if [ ! -f "$SCRIPTPATH/.new-conf" ];then
   touch "$SCRIPTPATH/.new-conf"
-  echo "blueprints=blueprints" >> "$SCRIPTPATH/.new-conf"
-  echo "backups=.backups" >> "$SCRIPTPATH/.new-conf"
+  echo "blueprints=$SCRIPTPATH/blueprints" >> "$SCRIPTPATH/.new-conf"
+  echo "backups=$SCRIPTPATH/.backups" >> "$SCRIPTPATH/.new-conf"
   exit;
 fi
 
@@ -27,22 +27,22 @@ fi
 # Create the backup directory if it doesn't exist.
 NEW_BACKUP_DIR="${backups:-$SCRIPTPATH/.backups}"
 if [ ! -d "$NEW_BACKUP_DIR" ];then
-  echo -e "\n  - Creating directory for backups at: "
+  echo -e "\n  - \e[1mCreating directory for backups at:\e[21m "
   echo -e "     $NEW_BACKUP_DIR"
   mkdir $NEW_BACKUP_DIR
 else
-  echo -e "\n  - Backups directory OK: "
+  echo -e "\n  - \e[1mBackups directory OK:\e[21m "
   echo -e "     $NEW_BACKUP_DIR"
 fi
 
 # Create the templates directory if it doesn't exist
 NEW_TEMPLATES_DIR="${blueprints:-$SCRIPTPATH/blueprints}"
 if [ ! -d "$NEW_TEMPLATES_DIR" ];then
-  echo -e "\n  Creating directory for templates at: "
+  echo -e "\n  \e[1mCreating directory for templates at:\e[21m "
   echo -e "     $NEW_TEMPLATES_DIR"
   mkdir "$NEW_TEMPLATES_DIR"
 else
-  echo -e "\n  - Templates directory OK: "
+  echo -e "\n  - \e[1mTemplates directory OK:\e[21m "
   echo -e "     $NEW_TEMPLATES_DIR"
 fi
 
@@ -58,12 +58,12 @@ fi
 function add_alias_to_config () {
   if [ -f "$1" ];then
     if `grep -Fxq "alias new=\"$SCRIPTPATH/blueprints.sh\"" "$1"`;then
-      echo -e "\n  - Alias to executable blueprints.sh in $1 OK"
+      echo -e "\n  - \e[1mAlias to executable blueprints.sh in $1 OK\e[21m"
       echo -e "    use the alias \`new\` to run the program"
     else
     
     # Ask user if they want the alias in their config file.
-    echo -e "\n  Would you like an alias to \`new\` inside your $1"
+    echo -e "\n  \e[1mWould you like an alias to \`new\` inside your $1\e[21m"
     echo -ne "    - type y/n then [ENTER]: "
     read answer
 
@@ -76,7 +76,7 @@ function add_alias_to_config () {
         echo -e "    use the alias \`new\` to run the program"
       )
     elif [ "$answer" != "n" ] && [ "$answer" != "N" ];then
-      echo -e "  ! Please Respond either \"y\" or \"n\" (case insensitive)."
+      echo -e "  \e[31m! Please Respond either \"y\" or \"n\" (case insensitive).\e[39m"
       add_alias_to_config "$1"
     fi
     fi

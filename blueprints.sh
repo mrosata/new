@@ -42,7 +42,7 @@ fi
 . "$SCRIPTPATH/.new-conf"
 
 NEW_IMPORTS_DIR="$SCRIPTPATH/bin"
-NEW_TEMPLATES_DIR="${blueprints:-$SCRIPTPATH/templates}"
+NEW_TEMPLATES_DIR="${blueprints:-$SCRIPTPATH/blueprints}"
 NEW_BACKUP_DIR="${backups:-$SCRIPTPATH/.backups}"
 
 function run_create_new_script() 
@@ -82,15 +82,15 @@ function display_templates_list () {
 }
 
 function show_folder_locations() {
-  echo "
-  New (blueprints) folder locations (mainly for debug purposes):
+  echo -e " \e[4m\"New\" folder locations:\e[24m
 
-  - New bin directory (where program is):
-      $SCRIPTPATH
-  - Template directory: 
-      $NEW_TEMPLATES_DIR
-  - Base Write directory (your dir): 
-      $TARGET_DIR"
+   - \e[1mNew bin directory (where program is):\e[21m
+       $SCRIPTPATH
+   - \e[1mTemplate directory:\e[21m
+       $NEW_TEMPLATES_DIR
+   - \e[1mBase Write directory (your dir):\e[21m
+       $TARGET_DIR
+  "
 }
 
 
@@ -292,6 +292,18 @@ done
 # Check for 2 positional args: template and destination filename
 blueprint=${@:$OPTIND:1}
 destname=${@:$OPTIND+1:1}
+
+if [ "1" -eq "$EDIT_ON_CREATE" ] && [ "0" -eq "$CREATE_NEW" ];then
+  # This is a pure edit, not create and edit
+  file_to_edit=${destname:-.new-conf}
+  if [ -f "$NEW_TEMPLATES_DIR/$blueprint/$file_to_edit" ];then
+    $EDITOR "$NEW_TEMPLATES_DIR/$blueprint/$file_to_edit";
+    exit_with_code $EXIT_OK
+  else
+    add_verbose_msg "Can't find file $NEW_TEMPLATES_DIR/$blueprint/$file_to_edit"
+    exit_with_code $E_NAMERR
+  fi
+fi
 
 if [ "$CREATE_NEW" -eq "1" ]
   then

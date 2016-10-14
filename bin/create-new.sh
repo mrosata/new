@@ -15,7 +15,7 @@
 EDITOR=${EDITOR:-vi}
 PAGER=${PAGER:-less}
 
-echo $blueprint
+
 new_new_blueprint_folder="$NEW_TEMPLATES_DIR/$blueprint"
 new_create_template="$new_new_blueprint_folder/template"
 template_from_file="$destname"
@@ -31,7 +31,7 @@ fi
 # Check if the folder for new stored "blueprint"
 if [ -d $new_new_blueprint_folder ];then
   # PROMPT THE USER IF THEY WANT TO OVERWRITE/EDIT/EXIT.
-  echo  "The template $blueprint already exists!"
+  echo  "\e[1mThe template $blueprint already exists!\e[21m"
   echo -n "   - Would you like to overwrite?  -press y/n then [ENTER]"
   read ans
   if [ $? != 0 ] || [[ ! $ans =~ ^y(es)?$ ]];then

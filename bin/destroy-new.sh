@@ -22,7 +22,7 @@ fi
 
 if [ -d $new_destroy_folder ];then
   # PROMPT THE USER IF THEY WANT TO OVERWRITE/EDIT/EXIT
-  echo  -e "  About to completely remove template $blueprint!"
+  echo  -e "\e[1m  About to completely remove template $blueprint!\e[21m"
   echo -n "     - Are you sure?  -press y/n then [ENTER]"
   read ans
   if [ $? != 0 ] || [[ ! $ans =~ ^y(es)?$ ]];then

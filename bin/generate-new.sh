@@ -15,9 +15,6 @@
 EDITOR=${EDITOR:-vi}
 PAGER=${PAGER:-less}
 
-# $blueprint_folder
-# $blueprint_config
-
 
 if [ -z "$blueprint_folder" ] || [ -z "$blueprint_config" ] || [ -z "$destname" ];then
   exit_with_code 65
