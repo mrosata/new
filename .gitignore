@@ -1,5 +1,7 @@
 # Backup folder
 .backups
+.new-conf
+blueprints
 
 # Logs
 logs
