@@ -31,7 +31,7 @@ fi
 # Check if the folder for new stored "blueprint"
 if [ -d $new_new_blueprint_folder ];then
   # PROMPT THE USER IF THEY WANT TO OVERWRITE/EDIT/EXIT.
-  echo  "\e[1mThe template $blueprint already exists!\e[21m"
+  echo -e "\e[1mThe template $blueprint already exists!\e[21m"
   echo -n "   - Would you like to overwrite?  -press y/n then [ENTER]"
   read ans
   if [ $? != 0 ] || [[ ! $ans =~ ^y(es)?$ ]];then
@@ -56,7 +56,10 @@ add_verbose_msg "creating new configuration file"
   cd $new_new_blueprint_folder
   # create the configuration file with basic info.
   touch ".new-conf"
-  echo -e "template=template\nnewpath=\nafter=\n" >> .new-conf
+  echo "template=template" >> .new-conf
+  echo "newpath=" >> .new-conf
+  echo "extension=" >> .new-conf
+  echo "after=" >> .new-conf
 )
 
 add_verbose_msg "creating new template file $new_create_template"

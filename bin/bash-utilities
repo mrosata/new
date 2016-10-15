@@ -64,6 +64,14 @@ function add_verbose_msg () {
 }
 
 
+function remove_extension () {
+  filename="$1"
+  extension="$2"
+  basefilename=${filename%$extension}
+  echo -n $basefilename
+}
+
+
 # most of this function copied @ StackOverflow
 #   http://stackoverflow.com/questions/59895/can-a-bash-script-tell-which-directory-it-is-stored-in
 function root_script_directory () {

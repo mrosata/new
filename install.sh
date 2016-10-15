@@ -18,7 +18,6 @@ if [ ! -f "$SCRIPTPATH/.new-conf" ];then
   touch "$SCRIPTPATH/.new-conf"
   echo "blueprints=$SCRIPTPATH/blueprints" >> "$SCRIPTPATH/.new-conf"
   echo "backups=$SCRIPTPATH/.backups" >> "$SCRIPTPATH/.new-conf"
-  exit;
 fi
 
 # source the config so we can build off it

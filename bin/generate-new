@@ -114,6 +114,7 @@ fi
 
 # Check user didn't set no changes
 if [ "0" -eq "$NO_CHANGE" ];then
+  echo -e " - \e[1mCreating:\e[21m $new_generated_dest"
   cp "$template_file" "$new_generated_dest"
 fi
 
@@ -121,8 +122,7 @@ fi
 #### TODO: Make the above functionality reusable so we can make more blueprint
 ####       if a blueprint utilizes the after= variable. 
 if [ -n "$config_after" ];then
-  echo -n
-  # echo "todo: run \`new $blueprint $destname\`"
+  "$SCRIPTPATH/blueprints.sh" $config_after $(remove_extension $destname $config_ext)
 fi
 
 unset new_generated_dest
