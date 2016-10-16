@@ -23,14 +23,17 @@ fi
 #### source the configuration file
 . "$blueprint_config"
 # unset every config option from file after it is set to local var
-config_out_folder=$newpath
+config_out_folder=${EXPLICIT_NEWPATH:-$newpath}
 unset newpath
+unset EXPLICIT_NEWPATH
 config_filename=$template
 unset template
-config_after=$after
+config_after=${EXPLICIT_AFTER:-$after}
 unset after
-config_ext=$extension
+unset EXPLICIT_AFTER
+config_ext=${EXPLICIT_EXTENSION:-$extension}
 unset extension
+unset EXPLICIT_EXTENSION
 
 final_name=$destname
 # Check if we there is explicit extension for the blueprint

@@ -108,6 +108,9 @@ load_exit_code_script
 ####      -b            - "Backup folder" - default to $SCRIPTPATH/backups
 ####      -B            - "No backups" - default is to create backups
 ####      -e            - "Edit on create" - use flag to edit new blueprint
+####      -x            - "Explicit extension" - create/generate extension
+####      -p            - "Explicit newpath" - create/generate newpath
+####      -a            - "Explicit after" - create/generate after
 ####
 
 # Arguments
@@ -143,7 +146,7 @@ if [ "$1" = "destroy" ];then
 fi
 
 # Parse command line args
-while getopts "t:b:hnvfbBe" opt
+while getopts "t:b:x:p:a:hnvfbBe" opt
 do
   case $opt in
     # No Change for test mode.
@@ -172,7 +175,7 @@ do
     # Set backup directory (optional)
     b)
       NEW_BACKUP_DIR="$OPTARG"
-      add_verbose_msg "set backup directory set as $NEW_BACKUP_DIR"
+      add_verbose_msg "set backup directory: \e[1m $NEW_BACKUP_DIR\e[21m"
       ;;
     B)
       NO_BACKUPS=1
@@ -182,10 +185,22 @@ do
       EDIT_ON_CREATE=1
       add_verbose_msg "will edit template file (if in 'new' mode)"
       ;;
+    x)
+      EXPLICIT_EXTENSION="$OPTARG"
+      add_verbose_msg "using explicit extension:\e[1m $OPTARG\e[21m"
+      ;;
+    p)
+      EXPLICIT_NEWPATH="$OPTARG"
+      add_verbose_msg "using explicit newpath:\e[1m $OPTARG\e[21m"
+      ;;
+    a)
+      EXPLICIT_AFTER="$OPTARG"
+      add_verbose_msg "using explicit after:\e[1m $OPTARG\e[21m"
+      ;;
     # Invalid Arguments. Display if verbose
     \?)
       UNKNOWN_ARG=1
-      add_verbose_msg "unknown argument: -$opt $OPTARG"
+      add_verbose_msg "unknown argument: -$opt \e[1m$OPTARG\e[21m"
       ;;
   esac
 done
