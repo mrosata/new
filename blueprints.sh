@@ -29,21 +29,49 @@ function program_instruction () {
 ####    NEW_BACKUP_DIR    ->  $SCRIPTPATH/.backups   -->  "backups storage"
 ####
 
-# push the directory of this script onto dir stack to save the directory
+
+# Save the path the user is running the script from.
+USERSPATH=`pwd`
+# push the directory this script is in to the dir stack
 pushd `dirname $0` > /dev/null
+# Save the path the script is running from
 SCRIPTPATH=`pwd`
+# Put the world back to normal
 popd > /dev/null
 
-# Source the config for the main program
+local_config_file=
+# Source a local config file if exists
+if [ -f "$USERSPATH/.new-conf" ];then
+
+  # FIRST CHECK IN USERS CURRENT PATH
+  local_config_file="$USERSPATH/.new-conf"
+  . "$local_config_file"
+  local_backups_dir="${backups:-}"
+  local_templates_dir="${blueprints:-}"
+  if [ -n "$local_templates_dir" ];then
+    local_templates_dir="$USERSPATH/$local_templates_dir"
+  fi
+  if [ -n "$local_backups_dir" ];then
+    local_backups_dir="$USERSPATH/$local_backups_dir"
+  fi
+  # Unset these because they should be replaced by the global config
+  # and if there is no global config it would cause confusion.
+  unset backups
+  unset blueprints
+fi
+
+# Source the main config file (from bin)
 if [ ! -f "$SCRIPTPATH/.new-conf" ];then
-  echo "No config file, run ./install.sh"
+
+  echo "No global config file, run ./install.sh"
   exit;
 fi
-. "$SCRIPTPATH/.new-conf"
+
 
 NEW_IMPORTS_DIR="$SCRIPTPATH/bin"
 NEW_TEMPLATES_DIR="${blueprints:-$SCRIPTPATH/blueprints}"
 NEW_BACKUP_DIR="${backups:-$SCRIPTPATH/.backups}"
+
 
 function run_create_new_script() 
   { . "$NEW_IMPORTS_DIR/create-new"; }
@@ -115,6 +143,7 @@ load_exit_code_script
 
 # Arguments
 CREATE_NEW=0
+ENFORCE_GLOBAL=0
 EDIT_ON_CREATE=0
 DESTROY_TEMPLATE=0
 TARGET_DIR=$(pwd)
@@ -146,7 +175,7 @@ if [ "$1" = "destroy" ];then
 fi
 
 # Parse command line args
-while getopts "t:b:x:p:a:hnvfbBe" opt
+while getopts "t:b:x:p:a:hnvfbBeg" opt
 do
   case $opt in
     # No Change for test mode.
@@ -197,6 +226,10 @@ do
       EXPLICIT_AFTER="$OPTARG"
       add_verbose_msg "using explicit after:\e[1m $OPTARG\e[21m"
       ;;
+    g)
+      ENFORCE_GLOBAL=1
+      add_verbose_msg "enforcing \e[1mglobal\e[21m configuration"
+      ;;
     # Invalid Arguments. Display if verbose
     \?)
       UNKNOWN_ARG=1
@@ -210,27 +243,24 @@ blueprint=${@:$OPTIND:1}
 destname=${@:$OPTIND+1:1}
 
 if [ "1" -eq "$EDIT_ON_CREATE" ] && [ "0" -eq "$CREATE_NEW" ];then
+
   # This is a pure edit, not create and edit
   file_to_edit=${destname:-.new-conf}
-  if [ -f "$NEW_TEMPLATES_DIR/$blueprint/$file_to_edit" ];then
+
+  if [ "$ENFORCE_GLOBAL" -eq "0" ] && [ -f "$local_templates_dir/$blueprint/$file_to_edit" ];then
+    # EDIT LOCAL TEMPLATE FILE.
+    $EDITOR "$local_templates_dir/$blueprint/$file_to_edit";
+    exit_with_code $EXIT_OK;
+  elif [ -f "$NEW_TEMPLATES_DIR/$blueprint/$file_to_edit" ];then
+    #EDIT GLOBAL TEMPLATE FILE
     $EDITOR "$NEW_TEMPLATES_DIR/$blueprint/$file_to_edit";
-    exit_with_code $EXIT_OK
+    exit_with_code $EXIT_OK;
   else
     add_verbose_msg "Can't find file $NEW_TEMPLATES_DIR/$blueprint/$file_to_edit"
     exit_with_code $E_NAMERR
   fi
 fi
 
-if [ "$CREATE_NEW" -eq "1" ]
-  then
-    run_create_new_script
-    exit_with_code $EXIT_OK
-
-elif [ "$DESTROY_TEMPLATE" -eq "1" ]
-  then
-    run_destroy_script
-    exit_with_code $EXIT_OK
-fi
 
 
 # Exit from unknown only after all args passed.
@@ -242,8 +272,10 @@ fi
 # NOTE: This test should only be reached if there isn't some pre-argument
 #       commands run such as `new`, `destroy` or `edit`. This area should
 #       probably be re-thought, as it isn't not easy to understand.
-if [ -z "$blueprint" ] || [ -z "$destname" ];then
-  echo -e "Must pass blueprint name and destname as last 2 positional args"
+if [ "$CREATE_NEW" -eq "0" ] && [ "$DESTROY_TEMPLATE" -eq "0" ];then
+  if [ -z "$blueprint" ] || [ -z "$destname" ];then
+    echo -e "Must pass blueprint name and destname as last 2 positional args"
+  fi
 fi
 
 
@@ -251,14 +283,55 @@ fi
 # into folders and filenames to look up information required to 
 # do the read and write.
 
-# Check that template folder exists.
-blueprint_folder="$NEW_TEMPLATES_DIR/$blueprint"
-blueprint_config="$blueprint_folder/.new-conf"
+if [ "$ENFORCE_GLOBAL" -eq "0" ] && [ -d "$local_templates_dir" ];then
+  # Check if local template folder exists
+  blueprint_folder="$local_templates_dir/$blueprint"
+  blueprint_config="$blueprint_folder/.new-conf"
+  # running mode helps in cli info and the generating backups
+  running_mode="local"
+
+  if [ "$CREATE_NEW" -eq "1" ] && [ -d "$local_templates_dir" ];then
+    run_create_new_script
+    exit_with_code $EXIT_OK
+  elif [ "$DESTROY_TEMPLATE" -eq "1" ] && [ -d "$blueprint_folder" ];then
+    run_destroy_script
+    exit_with_code $EXIT_OK
+  fi
+
+
+  if [ ! -f "$blueprint_config" ];then
+    add_verbose_msg "no config inside local boilerplate \"$blueprint\" in folder\e[1m $blueprint_folder\e[21m"
+    unset blueprint_folder
+    unset blueprint_config
+  fi
+
+fi
+
+
+if [ ! -d "$blueprint_folder" ] || [ ! -f "$blueprint_config" ];then
+  # Check that template folder exists.
+  blueprint_folder="$NEW_TEMPLATES_DIR/$blueprint"
+  blueprint_config="$blueprint_folder/.new-conf"
+  # running mode helps in the generating backups
+  running_mode="global"
+
+  if [ "$CREATE_NEW" -eq "1" ]
+    then
+      run_create_new_script
+      exit_with_code $EXIT_OK
+
+  elif [ "$DESTROY_TEMPLATE" -eq "1" ]
+    then
+      run_destroy_script
+      exit_with_code $EXIT_OK
+  fi
+fi
+
+
 if [ ! -d "$blueprint_folder" ] || [ ! -f "$blueprint_config" ];then
   add_verbose_msg "new template $blueprint does not exists in folder $blueprint_folder"
   exit_with_code $E_TMPERR
 fi
-
 
 # Generate the boilerplate code
 run_generate_new_script

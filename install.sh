@@ -9,6 +9,16 @@
 ####     @desc:   This file is used to install and setup the "new" program.
 ####
 
+# Quicknap makes the install pause for quick moments between steps. It's for 
+# the users sake, so the text doesn't just appear all at once and they can
+# intuitively feel the steps the install takes. Otherwise it is jarring to 
+# answer a question prompt and instantly jump down 10 lines. 
+function quicknap() {
+  sleep_time="${1:-.2}"
+  sleep $sleep_time
+}
+
+
 pushd `dirname $0` > /dev/null
 SCRIPTPATH=`pwd`
 popd > /dev/null
@@ -23,6 +33,7 @@ fi
 # source the config so we can build off it
 . "$SCRIPTPATH/.new-conf"
 
+quicknap
 # Create the backup directory if it doesn't exist.
 NEW_BACKUP_DIR="${backups:-$SCRIPTPATH/.backups}"
 if [ ! -d "$NEW_BACKUP_DIR" ];then
@@ -34,6 +45,7 @@ else
   echo -e "     $NEW_BACKUP_DIR"
 fi
 
+quicknap
 # Create the templates directory if it doesn't exist
 NEW_TEMPLATES_DIR="${blueprints:-$SCRIPTPATH/blueprints}"
 if [ ! -d "$NEW_TEMPLATES_DIR" ];then
@@ -45,6 +57,7 @@ else
   echo -e "     $NEW_TEMPLATES_DIR"
 fi
 
+quicknap
 # Make sure that the main file is executable
 if [ ! -x "$SCRIPTPATH/blueprints.sh" ];then
   chmod +x "$SCRIPTPATH/blueprints.sh"
@@ -55,6 +68,7 @@ fi
 
 
 function add_alias_to_config () {
+  quicknap
   if [ -f "$1" ];then
     if `grep -Fxq "alias new=\"$SCRIPTPATH/blueprints.sh\"" "$1"`;then
       echo -e "\n  - \e[1mAlias to executable blueprints.sh in $1 OK\e[21m"
@@ -84,5 +98,6 @@ function add_alias_to_config () {
 
 
 add_alias_to_config "$HOME/.bashrc"
+add_alias_to_config "$HOME/.profile"
 add_alias_to_config "$HOME/.zshenv"
 add_alias_to_config "$HOME/.zshrc"

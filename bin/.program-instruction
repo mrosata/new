@@ -85,6 +85,7 @@ echo "
     -B   \"No Backup\", if a file is overwritten do not create a backup. Generally
          templates shouldn't overwrite files.
     -e   \"Edit\", open editor upon any change. Uses the global EDITOR|-vi
+    -g   \"Global\", uses the global config even if a local .new-conf is present
 
 
 

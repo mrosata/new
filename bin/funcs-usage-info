@@ -23,8 +23,16 @@ function print_program_help() {
 # Shows all the templates in the new templates directory 
 function display_templates_list () {
   if [ -d "$NEW_TEMPLATES_DIR" ];then
+    echo -e "\e[1m( global )\e[21m"
     echo -e "Found $(ls -1 $NEW_TEMPLATES_DIR | wc -l) templates:"
     list_subdirectories_in $NEW_TEMPLATES_DIR '    '
+  fi
+
+  if [ -d "$local_templates_dir" ];then
+    echo -e "\e[1m( local )\e[21m"
+    echo -e "Found $(ls -1 $local_templates_dir | wc -l) templates:"
+    list_subdirectories_in $local_templates_dir '    '
+
   fi
 }
 
@@ -35,13 +43,37 @@ function display_templates_list () {
 function show_folder_locations() {
   echo -e " \e[4m\"New\" folder locations:\e[24m
 
-   - \e[1mNew bin directory (where program is):\e[21m
-       $SCRIPTPATH
-   - \e[1mTemplate directory:\e[21m
-       $NEW_TEMPLATES_DIR
-   - \e[1mBase Write directory (your dir):\e[21m
-       $TARGET_DIR
-  "
+    - \e[1mNew bin directory (where program is):\e[21m
+        $SCRIPTPATH
+    - \e[1mTemplate directory:\e[21m
+        $NEW_TEMPLATES_DIR
+    - \e[1mCurrent working folder (your dir):\e[21m
+        $TARGET_DIR"
+
+  if [ -f "$local_config_file" ];then
+
+    # LOCAL TEMPLATES DIR INFO
+    echo -e "
+    - \e[1m(local) Config found:\e[21m
+        $local_config_file
+    - \e[1m(local) Template directory:\e[21m"
+    if [ -d "$local_templates_dir" ];then
+      echo -ne "        $local_templates_dir"
+    else
+      echo -ne "        local directory not exists $local_templates_dir"
+    fi
+
+    # LOCAL BACKUPS DIR INFO
+    echo -e "
+    - \e[1m(local) Backup directory:\e[21m"
+    if [ -d "$local_backups_dir" ];then
+      echo -ne "        $local_backups_dir"
+    else
+      echo -ne "        local directory not exists $local_backups_dir"
+    fi
+
+  fi
+  echo;
 }
 
 

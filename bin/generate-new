@@ -85,8 +85,13 @@ if [ "$NO_BACKUPS" -eq "0" ];then
   # If destname file exists we are ready to start backup process
   if [ -f "$new_generated_dest" ];then
 
+    if [ "$running_mode" = "local" ] && [ -d "$local_backups_dir" ];then
+      backup_dir="$local_backups_dir"
+    else
+      backup_dir="$NEW_BACKUP_DIR"
+    fi
     # Destination path should be mirrored in backup (for easier restores)
-    dest_dir_backup="$NEW_BACKUP_DIR$absdir_new_generated_dest"
+    dest_dir_backup="$backup_dir$absdir_new_generated_dest"
     if [ ! -d $dest_dir_backup ];then
       add_verbose_msg "creating backup dir: $dest_dir_backup"
       if [ "$NO_CHANGE" -eq "0" ];then

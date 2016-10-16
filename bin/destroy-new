@@ -13,7 +13,7 @@
 
 EDITOR=${EDITOR:-vi}
 PAGER=${PAGER:-less}
-new_destroy_folder="$NEW_TEMPLATES_DIR/$blueprint"
+new_destroy_folder="${blueprint_folder:-NEW_TEMPLATES_DIR/$blueprint}"
 
 if [ -z "$blueprint" ];then
   exit_with_code $E_MISS
@@ -22,7 +22,7 @@ fi
 
 if [ -d $new_destroy_folder ];then
   # PROMPT THE USER IF THEY WANT TO OVERWRITE/EDIT/EXIT
-  echo  -e "\e[1m  About to completely remove template $blueprint!\e[21m"
+  echo  -e "\e[1m  About to completely remove $running_mode template $blueprint!\e[21m"
   echo -n "     - Are you sure?  -press y/n then [ENTER]"
   read ans
   if [ $? != 0 ] || [[ ! $ans =~ ^y(es)?$ ]];then
