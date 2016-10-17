@@ -151,6 +151,7 @@ UNKNOWN_ARG=0       # This turns to 1 if unknown arg is passed.
 NO_BACKUPS=0
 NO_CHANGE=0
 VERBOSE=0
+INFER_NEWPATH=0
 
 
 # Check if user passed -h|help -l|list or info
@@ -175,7 +176,7 @@ if [ "$1" = "destroy" ];then
 fi
 
 # Parse command line args
-while getopts "t:b:x:p:a:hnvfbBeg" opt
+while getopts "t:b:x:p:a:hnvfbBeg!" opt
 do
   case $opt in
     # No Change for test mode.
@@ -219,8 +220,15 @@ do
       add_verbose_msg "using explicit extension:\e[1m $OPTARG\e[21m"
       ;;
     p)
-      EXPLICIT_NEWPATH="$OPTARG"
-      add_verbose_msg "using explicit newpath:\e[1m $OPTARG\e[21m"
+      if [ -n "$OPTARG" ];then
+        EXPLICIT_NEWPATH="$OPTARG"
+        add_verbose_msg "using explicit newpath:\e[1m $OPTARG\e[21m"
+      else
+        # TODO: This option will try to figure out the path to either save
+        #       to a blueprint .new-conf or to use in generating one.
+        INFER_NEWPATH=1
+        # add_verbose_msg "will attempt to infer newpath if creating new blueprint"
+      fi
       ;;
     a)
       EXPLICIT_AFTER="$OPTARG"
