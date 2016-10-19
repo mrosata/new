@@ -1,0 +1,28 @@
+#### THIS FILE IS INCOMPLETE UNTIL new_script_path= is added
+if [ -z "$new_script_path" ];then
+  exit;
+fi
+
+# Read new conf to get the blueprints folder
+. "$new_script_path/.new-conf"
+
+_new_autocompletions () 
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="new destroy"
+
+    blueprints_dir="$blueprints"
+    if [[ ${cur} == * ]];then
+      local files=("$blueprints_dir/$2"*)
+      [[ -e ${files[0]} ]] && COMPREPLY=( "${files[@]##*/}" )
+
+    elif [[ ${cur} == --* ]] ; then
+        COMPREPLY=( $(compgen -d "${opts}" ${blueprints_dir:-}) )
+        return 0
+    fi
+}
+
+complete -F _new_autocompletions new

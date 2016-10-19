@@ -3,6 +3,7 @@
 .new-conf
 blueprints
 templates
+bin/.tmp_autocomplete
 
 # Logs
 logs

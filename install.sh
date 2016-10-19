@@ -97,7 +97,20 @@ function add_alias_to_config () {
 }
 
 
+function add_autocompletions () {
+  tmp_autocomplete="$SCRIPTPATH/bin/.tmp_autocomplete"
+  echo -e "#!/bin/bash\n\nnew_script_path=$SCRIPTPATH" > $tmp_autocomplete;
+  cat "$SCRIPTPATH/bin/autocompletions" >> $tmp_autocomplete;
+
+  if [ -d "/etc/bash_completion.d" ];then
+    echo "Creating Autocompletions for Bash Shell"
+    sudo cp -T "$tmp_autocomplete" "/etc/bash_completion.d/new_autocompletions"    
+  fi
+}
+
+
 add_alias_to_config "$HOME/.bashrc"
 add_alias_to_config "$HOME/.profile"
 add_alias_to_config "$HOME/.zshenv"
 add_alias_to_config "$HOME/.zshrc"
+add_autocompletions
