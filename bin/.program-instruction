@@ -74,12 +74,24 @@ echo "
     -a AFTER 
         \"Explicit After\" set after for generated/created blueprint. Like extension
         this can be used when creating or using a blueprint
+    -n NAME
+        \"Set newname\" set the name to use for file when creating new boilerplate or
+        generating a boilerplate file into your working directory. Basically this 
+        changes the \"newname=\" setting in the blueprints \".new-conf\" file which 
+        is useful for blueprints that have dynamic pathnames rather than dynamic file
+        names. For example a component named 'welcome' might save as:
+            'app/welcome/component.js'
+        so to get this result we would want a .new-conf that looks like:
+            template=template
+            newname=component
+            pathname=app/\$name
+            extension=.js
+        The -n option would set the \"newname\" setting on the fly.
 
 
   \"Flags\"
     
     -h   \"Help\", show this screen.
-    -n   \"No change\", meaning no files will be created/altered/removed this run.
     -d   \"Force directory\", Overrides the blueprint setting \"forcepath\" which 
          defaults to false. Passing -d will allow any blueprint to create directories.
          This flag may be passed on creation or generation. (so it will persist to 

@@ -20,6 +20,9 @@ if [ -z "$blueprint_folder" ] || [ -z "$blueprint_config" ] || [ -z "$destname" 
   exit_with_code 65
 fi
 
+
+# name will be variable for use in template
+name=$destname
 #### source the configuration file
 . "$blueprint_config"
 # unset every config option from file after it is set to local var
@@ -35,14 +38,17 @@ unset EXPLICIT_AFTER
 config_ext=${EXPLICIT_EXTENSION:-$extension}
 unset extension
 unset EXPLICIT_EXTENSION
+config_name="${EXPLICIT_NEWNAME:-$newname}"
+config_name="${config_name:-$destname}"
+# unset EXPLICIT_NEWNAME
+unset newname
 
-final_name=$destname
 # Check if we there is explicit extension for the blueprint
 if [ -n "$config_ext" ];then
   regexp_test=".*$config_ext\$"
   # Make sure the extension isn't already on the name
-  if [[ ! "$destname" =~ $regexp_test ]];then
-    final_name="$destname$config_ext"
+  if [[ ! "$config_name" =~ $regexp_test ]];then
+    config_name="$config_name$config_ext"
   fi
   unset regexp_test
 fi
@@ -50,9 +56,9 @@ fi
 
 template_file="$blueprint_folder/$config_filename"
 if [ -n "$config_out_folder" ];then
-  new_generated_dest="$TARGET_DIR/$config_out_folder/$final_name"
+  new_generated_dest="$TARGET_DIR/$config_out_folder/$config_name"
 else
-  new_generated_dest="$TARGET_DIR/$final_name" 
+  new_generated_dest="$TARGET_DIR/$config_name" 
 fi
 
 
@@ -81,44 +87,38 @@ fi
 
 
 # Backup the current file if we're going to overwrite a file.
-if [ "$NO_BACKUPS" -eq "0" ];then
-
-  # Check if base backup dir exists
-  if [ ! -d "$NEW_BACKUP_DIR" ];then
-    exit_with_code $E_BKUPERR
-  fi
-
-  # If destname file exists we are ready to start backup process
-  if [ -f "$new_generated_dest" ];then
-
-    if [ "$running_mode" = "local" ] && [ -d "$local_backups_dir" ];then
-      backup_dir="$local_backups_dir"
-    else
-      backup_dir="$NEW_BACKUP_DIR"
-    fi
-    # Destination path should be mirrored in backup (for easier restores)
-    dest_dir_backup="$backup_dir$absdir_new_generated_dest"
-    if [ ! -d $dest_dir_backup ];then
-      add_verbose_msg "creating backup dir: $dest_dir_backup"
-      if [ "$NO_CHANGE" -eq "0" ];then
-        mkdir -p $dest_dir_backup
-      fi
-    fi
-
-    add_verbose_msg "backing up file: $dest_dir_backup/$(basename $destname)"
-    if [ "$NO_CHANGE" -eq "0" ];then
-      cp "$new_generated_dest" "$dest_dir_backup"
-    fi
-
-  else
-
-    #destination file or backup folder doesn't exist
-    if [ ! -f "$new_generated_dest" ];then
-      add_verbose_msg "nothing to backup"
-    fi
-
-  fi
+# Check if base backup dir exists
+if [ ! -d "$NEW_BACKUP_DIR" ];then
+  exit_with_code $E_BKUPERR
 fi
+
+# If config_name file exists we are ready to start backup process
+if [ -f "$new_generated_dest" ];then
+
+  if [ "$running_mode" = "local" ] && [ -d "$local_backups_dir" ];then
+    backup_dir="$local_backups_dir"
+  else
+    backup_dir="$NEW_BACKUP_DIR"
+  fi
+  # Destination path should be mirrored in backup (for easier restores)
+  dest_dir_backup="$backup_dir$absdir_new_generated_dest"
+  if [ ! -d $dest_dir_backup ];then
+    add_verbose_msg "creating backup dir: $dest_dir_backup"
+    mkdir -p $dest_dir_backup
+  fi
+
+  add_verbose_msg "backing up file: $dest_dir_backup/$(basename $config_name)"
+  cp "$new_generated_dest" "$dest_dir_backup"
+
+else
+
+  #destination file or backup folder doesn't exist
+  if [ ! -f "$new_generated_dest" ];then
+    add_verbose_msg "nothing to backup"
+  fi
+
+fi
+
 
 
 ################################################################################
@@ -126,11 +126,9 @@ fi
 #### Generate boilerplate out to destination
 ####
 
-# Check user didn't set no changes
-if [ "0" -eq "$NO_CHANGE" ];then
-  echo -e " - \e[1mCreating:\e[21m $new_generated_dest"
-  cp "$template_file" "$new_generated_dest"
-fi
+
+echo -e " - \e[1mCreating:\e[21m $new_generated_dest"
+cp "$template_file" "$new_generated_dest"
 
 # Check if there is a blueprint to run after
 #### TODO: Make the above functionality reusable so we can make more blueprint

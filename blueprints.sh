@@ -131,7 +131,7 @@ load_exit_code_script
 ####
 ####      -t DIRECTORY  - "target - Target directory, defaults to current."
 ####      -v            - "verbose - display what changes will be made."
-####	    -n            - "No Change - don't actually make changes, trial run."
+####	    -n            - "Set the newname option on the fly"
 ####      -f            - "Folders - show the folder locations"
 ####      -b            - "Backup folder" - default to $SCRIPTPATH/backups
 ####      -B            - "No backups" - default is to create backups
@@ -149,7 +149,6 @@ DESTROY_TEMPLATE=0
 TARGET_DIR=$(pwd)
 UNKNOWN_ARG=0       # This turns to 1 if unknown arg is passed.
 NO_BACKUPS=0
-NO_CHANGE=0
 VERBOSE=0
 INFER_NEWPATH=0
 FORCE_DIRECTORIES=
@@ -177,13 +176,13 @@ if [ "$1" = "destroy" ];then
 fi
 
 # Parse command line args
-while getopts "t:b:x:p:a:hnvfbdBeg!" opt
+while getopts "t:b:x:p:a:n:hvfbdBeg!" opt
 do
   case $opt in
-    # No Change for test mode.
+    # Set the newname property.
   	n)
-      NO_CHANGE=1
-      add_verbose_msg "run will make no changes to system"
+      EXPLICIT_NEWNAME="$OPTARG"
+      add_verbose_msg "setting 'newname' to $OPTARG"
       ;;
     # Verbose level increment (IE: -vvv would result in VERBOSE == 3 )
     v)
