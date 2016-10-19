@@ -26,6 +26,7 @@ fi
 config_out_folder=${EXPLICIT_NEWPATH:-$newpath}
 unset newpath
 unset EXPLICIT_NEWPATH
+config_forcepath=${FORCE_DIRECTORIES:-$forcepath}
 config_filename=$template
 unset template
 config_after=${EXPLICIT_AFTER:-$after}
@@ -62,6 +63,11 @@ fi
 
 # Check that directory where we are going to write file exists.
 absdir_new_generated_dest=$(dirname "$new_generated_dest")
+if [ ! -z "$FORCE_DIRECTORIES" ] && [ "$FORCE_DIRECTORIES" -ne "0" ] && [ ! -d "$absdir_new_generated_dest" ];then
+  add_verbose_msg "Created new directory $new_generated_dest"
+  mkdir -p "$absdir_new_generated_dest"
+fi
+
 if [ ! -d "$absdir_new_generated_dest" ]
   then
     #// TODO Should check if create directory is set

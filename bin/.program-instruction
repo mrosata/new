@@ -80,6 +80,10 @@ echo "
     
     -h   \"Help\", show this screen.
     -n   \"No change\", meaning no files will be created/altered/removed this run.
+    -d   \"Force directory\", Overrides the blueprint setting \"forcepath\" which 
+         defaults to false. Passing -d will allow any blueprint to create directories.
+         This flag may be passed on creation or generation. (so it will persist to 
+         .new-conf when creating a new new boilerplate)
     -v   \"Verbose\", the verbosity level can be set by using multiple \"v\" flags
     -f   \"\",
     -B   \"No Backup\", if a file is overwritten do not create a backup. Generally

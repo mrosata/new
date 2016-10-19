@@ -2,6 +2,7 @@
 .backups
 .new-conf
 blueprints
+templates
 
 # Logs
 logs

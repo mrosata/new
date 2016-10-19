@@ -59,6 +59,7 @@ add_verbose_msg "creating new configuration:\e[1m $new_new_blueprint_folder/.new
   touch ".new-conf"
   echo "template=template" >> .new-conf
   echo "newpath=${EXPLICIT_NEWPATH:-}" >> .new-conf
+  echo "extension=${FORCE_DIRECTORIES:-}" >> .new-conf
   echo "extension=${EXPLICIT_EXTENSION:-}" >> .new-conf
   echo "after=${EXPLICIT_AFTER:-}" >> .new-conf
 )

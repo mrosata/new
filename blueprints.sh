@@ -152,6 +152,7 @@ NO_BACKUPS=0
 NO_CHANGE=0
 VERBOSE=0
 INFER_NEWPATH=0
+FORCE_DIRECTORIES=
 
 
 # Check if user passed -h|help -l|list or info
@@ -176,7 +177,7 @@ if [ "$1" = "destroy" ];then
 fi
 
 # Parse command line args
-while getopts "t:b:x:p:a:hnvfbBeg!" opt
+while getopts "t:b:x:p:a:hnvfbdBeg!" opt
 do
   case $opt in
     # No Change for test mode.
@@ -196,6 +197,9 @@ do
     f)
       show_folder_locations
       exit_with_code $EXIT_OK
+      ;;
+    d)
+      FORCE_DIRECTORIES=1
       ;;
     # Set target directory (optional)
     t)
@@ -311,6 +315,7 @@ if [ "$ENFORCE_GLOBAL" -eq "0" ] && [ -d "$local_templates_dir" ];then
     add_verbose_msg "no config inside local boilerplate \"$blueprint\" in folder\e[1m $blueprint_folder\e[21m"
     unset blueprint_folder
     unset blueprint_config
+    unset blueprint_force
   fi
 
 fi
