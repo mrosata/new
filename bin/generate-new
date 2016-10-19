@@ -63,7 +63,7 @@ fi
 
 # Check that directory where we are going to write file exists.
 absdir_new_generated_dest=$(dirname "$new_generated_dest")
-if [ ! -z "$FORCE_DIRECTORIES" ] && [ "$FORCE_DIRECTORIES" -ne "0" ] && [ ! -d "$absdir_new_generated_dest" ];then
+if [ ! -z "$config_forcepath" ] && [ "$config_forcepath" -ne "0" ] && [ ! -d "$absdir_new_generated_dest" ];then
   add_verbose_msg "Created new directory $new_generated_dest"
   mkdir -p "$absdir_new_generated_dest"
 fi
